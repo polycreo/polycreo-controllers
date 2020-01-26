@@ -1,7 +1,6 @@
 package org.polycreo.presentation.controllers
 
 import java.io.Serializable
-import java.net.URI
 import java.util.function.Supplier
 import org.polycreo.httpexceptions.HttpConflictException
 import org.polycreo.presentation.mappings.PolycreoHandler
@@ -14,13 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody
 
 private val logger = mu.KotlinLogging.logger {}
 
-interface CreatableController<E, ID : Serializable, R : CreateRequest<E>> {
+interface CreatableController<E : Any, ID : Serializable, R : CreateRequest<E>> : Locatable<E> {
 
     val usecase: CreatableUsecase<E, ID>
-
-    val path: String
-
-    val idExtractor: (Any?) -> Serializable?
 
     @PolycreoHandler
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Create' + #resourceName)")
@@ -35,8 +30,6 @@ interface CreatableController<E, ID : Serializable, R : CreateRequest<E>> {
             throw HttpConflictException(e)
         }
     }
-
-    fun locationOf(created: E): URI = URI.create("$path/${idExtractor(created)}")
 }
 
 interface CreateRequest<T> : Supplier<T>

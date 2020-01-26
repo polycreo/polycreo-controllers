@@ -1,7 +1,6 @@
 package org.polycreo.presentation.controllers
 
 import java.io.Serializable
-import java.net.URI
 import org.polycreo.presentation.mappings.PolycreoHandler
 import org.polycreo.presentation.usecases.UpsertableUsecase
 import org.springframework.http.ResponseEntity
@@ -18,13 +17,9 @@ private val logger = mu.KotlinLogging.logger {}
  * @param E the domain type the usecase manages
  * @param ID the type of the id of the entity the usecase manages
  */
-interface UpsertableController<E, ID : Serializable> {
+interface UpsertableController<E : Any, ID : Serializable> : Locatable<E> {
 
     val usecase: UpsertableUsecase<E, ID>
-
-    val path: String
-
-    val idExtractor: (Any?) -> Serializable?
 
     /**
      * Saves a given resource.
@@ -48,11 +43,4 @@ interface UpsertableController<E, ID : Serializable> {
             ResponseEntity.created(locationOf(saved)).body(saved)
         }
     }
-
-    /**
-     * Compute resource location [URI] for the `Location` response header in `201 Created` response.
-     *
-     * @return location URI of [created] resource
-     */
-    fun locationOf(created: E): URI = URI.create("$path/${idExtractor(created)}")
 }
