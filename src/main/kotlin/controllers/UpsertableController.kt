@@ -22,6 +22,10 @@ interface UpsertableController<E, ID : Serializable> {
 
     val usecase: UpsertableUsecase<E, ID>
 
+    val path: String
+
+    val idExtractor: (Any?) -> Serializable
+
     /**
      * Saves a given resource.
      *
@@ -50,5 +54,5 @@ interface UpsertableController<E, ID : Serializable> {
      *
      * @return location URI of [created] resource
      */
-    fun locationOf(created: E): URI
+    fun locationOf(created: E): URI = URI.create("$path/${idExtractor(created)}")
 }

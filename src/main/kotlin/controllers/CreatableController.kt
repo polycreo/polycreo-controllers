@@ -18,6 +18,10 @@ interface CreatableController<E, ID : Serializable, R : CreateRequest<E>> {
 
     val usecase: CreatableUsecase<E, ID>
 
+    val path: String
+
+    val idExtractor: (Any?) -> Serializable
+
     @PolycreoHandler
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Create' + #resourceName)")
     fun create(@RequestBody @Validated request: R): ResponseEntity<E> {
@@ -32,7 +36,7 @@ interface CreatableController<E, ID : Serializable, R : CreateRequest<E>> {
         }
     }
 
-    fun locationOf(created: E): URI
+    fun locationOf(created: E): URI = URI.create("$path/${idExtractor(created)}")
 }
 
 interface CreateRequest<T> : Supplier<T>
