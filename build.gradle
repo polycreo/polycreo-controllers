@@ -60,8 +60,24 @@ repositories {
 }
 
 dependencies {
+	api 'org.polycreo:polycreo-loggings:1.0.0-rc3'
+	api 'org.polycreo:polycreo-usecases:1.0.0-rc1'
+	api 'org.polycreo:polycreo-resources:1.0.0-rc6'
+	implementation 'org.polycreo:polycreo-httpexceptions:1.0.0-rc5'
+
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 	// implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8'
+	implementation 'org.springframework:spring-tx'
+	implementation 'org.springframework:spring-web'
+	implementation 'org.springframework:spring-webmvc'
+	implementation 'org.springframework.security:spring-security-core'
+	implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+	// others
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'io.github.microutils:kotlin-logging:1.6.26'
+	implementation 'com.github.java-json-tools:json-patch:1.10'
+	compileOnly 'javax.servlet:javax.servlet-api'
 
 	// test
 	testImplementation 'org.jetbrains.kotlin:kotlin-reflect'
