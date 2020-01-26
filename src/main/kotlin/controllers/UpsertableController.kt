@@ -27,8 +27,8 @@ interface UpsertableController<E : Any, ID : Serializable> : Locatable<E> {
      * @param id resource identifier
 	 * @param newImage resource to save
      * @return [ResponseEntity] of `201 Created`
-     *     if a new resource was created or the [usecase] is not [ReadableUsecase].
-     *     `200 OK` is returned if an existing resource was updated.
+     *   if a new resource was created or the [usecase] is not [org.polycreo.presentation.usecases.ReadableUsecase].
+     *   `200 OK` is returned if an existing resource was updated.
      * @throws org.springframework.dao.DataAccessException if a data access error occurred
 	 */
     @PolycreoHandler
