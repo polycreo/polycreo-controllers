@@ -24,7 +24,7 @@ interface UpsertableController<E, ID : Serializable> {
 
     val path: String
 
-    val idExtractor: (Any?) -> Serializable
+    val idExtractor: (Any?) -> Serializable?
 
     /**
      * Saves a given resource.

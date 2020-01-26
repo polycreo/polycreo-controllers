@@ -20,7 +20,7 @@ interface CreatableController<E, ID : Serializable, R : CreateRequest<E>> {
 
     val path: String
 
-    val idExtractor: (Any?) -> Serializable
+    val idExtractor: (Any?) -> Serializable?
 
     @PolycreoHandler
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Create' + #resourceName)")
