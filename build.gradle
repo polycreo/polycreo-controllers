@@ -61,7 +61,7 @@ repositories {
 
 dependencies {
 	api 'org.polycreo:polycreo-loggings:1.0.0-rc3'
-	api 'org.polycreo:polycreo-usecases:1.0.0-rc1'
+	api 'org.polycreo:polycreo-services:1.0.0-rc1'
 	api 'org.polycreo:polycreo-resources:1.0.0-rc6'
 	implementation 'org.polycreo:polycreo-httpexceptions:1.0.0-rc5'
 
