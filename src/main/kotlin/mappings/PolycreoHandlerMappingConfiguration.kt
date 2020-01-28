@@ -18,11 +18,14 @@ package org.polycreo.presentation.mappings
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Profile
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
 /**
  * TODO miyamoto.daisuke.
  */
+@Profile("web")
 @Configuration
 class PolycreoHandlerMappingConfiguration {
 
@@ -39,3 +42,9 @@ class PolycreoHandlerMappingConfiguration {
         }
     }
 }
+
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+@Import(PolycreoHandlerMappingConfiguration::class)
+annotation class EnablePolycreoHandlerMapping
