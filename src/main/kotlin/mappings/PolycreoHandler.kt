@@ -27,6 +27,8 @@ annotation class PolycreoHandler(
     val actionVerb: String,
     val method: RequestMethod,
     val pathType: PathType,
+    val pathPrefix: String = "",
+    val pathSuffix: String = "",
     val headers: Array<String> = [],
     val params: Array<String> = [],
     val consumes: Array<String> = [],

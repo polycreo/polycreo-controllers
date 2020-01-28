@@ -39,32 +39,29 @@ class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
 
     @Suppress("SpreadOperator", "ReturnCount")
     override fun getMappingForMethod(method: Method, handlerType: Class<*>): RequestMappingInfo? {
-        val methodAnnotation = findMergedAnnotation(method, PolycreoHandler::class.java)
+        val handler = findMergedAnnotation(method, PolycreoHandler::class.java)
             ?: return super.getMappingForMethod(method, handlerType)
-        val controllerAnnotation = findMergedAnnotation(handlerType, PolycreoController::class.java)
+        val controller = findMergedAnnotation(handlerType, PolycreoController::class.java)
             ?: return null
         return RequestMappingInfo
-            .paths(determinePath(methodAnnotation, controllerAnnotation))
-            .methods(methodAnnotation.method)
-            .mappingName(determineActionName(methodAnnotation, controllerAnnotation))
-            .params(*methodAnnotation.params)
-            .headers(*methodAnnotation.headers)
-            .consumes(*methodAnnotation.consumes)
-            .produces(*methodAnnotation.produces)
+            .paths(determinePath(handler, controller))
+            .methods(handler.method)
+            .mappingName(determineActionName(handler, controller))
+            .params(*handler.params)
+            .headers(*handler.headers)
+            .consumes(*handler.consumes)
+            .produces(*handler.produces)
             .build()
     }
 
     private fun determineActionName(
-        methodAnnotation: PolycreoHandler,
-        controllerAnnotation: PolycreoController
-    ) = methodAnnotation.actionVerb + controllerAnnotation.resourceName.capitalize()
+        handler: PolycreoHandler,
+        controller: PolycreoController
+    ) = handler.actionVerb + controller.resourceName.capitalize()
 
-    private fun determinePath(
-        methodAnnotation: PolycreoHandler,
-        controllerAnnotation: PolycreoController
-    ) = when (methodAnnotation.pathType) {
-        PathType.ENTIRE_COLLECTION -> "/${controllerAnnotation.pluralizedResourceName}"
-        PathType.SPECIFIC_ITEM -> "/${controllerAnnotation.pluralizedResourceName}/{id}"
+    private fun determinePath(handler: PolycreoHandler, controller: PolycreoController) = when (handler.pathType) {
+        PathType.ENTIRE_COLLECTION -> "${handler.pathPrefix}/${controller.pluralizedResourceName}${handler.pathSuffix}"
+        PathType.SPECIFIC_ITEM -> "${handler.pathPrefix}/${controller.pluralizedResourceName}/{id}${handler.pathSuffix}"
     }
 
     override fun handleMatch(info: RequestMappingInfo, lookupPath: String, request: HttpServletRequest) {
