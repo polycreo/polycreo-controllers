@@ -2,12 +2,14 @@ package org.polycreo.presentation.controllers
 
 import java.io.Serializable
 import org.polycreo.httpexceptions.HttpNotFoundException
+import org.polycreo.presentation.mappings.PathType
 import org.polycreo.presentation.mappings.PolycreoHandler
 import org.polycreo.presentation.usecases.DeletableUsecase
 import org.polycreo.services.NotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMethod
 
 private val logger = mu.KotlinLogging.logger {}
 
@@ -15,7 +17,7 @@ interface DeletableController<E, ID : Serializable> {
 
     val usecase: DeletableUsecase<E, ID>
 
-    @PolycreoHandler
+    @PolycreoHandler("Delete", RequestMethod.DELETE, PathType.SPECIFIC_ITEM)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Delete' + #resourceName)")
     fun delete(@PathVariable id: ID): ResponseEntity<E> {
         try {

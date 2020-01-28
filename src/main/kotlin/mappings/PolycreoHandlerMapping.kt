@@ -15,24 +15,21 @@
  */
 package org.polycreo.presentation.mappings
 
-import com.github.fge.jsonpatch.JsonPatch
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch
 import java.lang.reflect.Method
 import javax.servlet.http.HttpServletRequest
-import org.springframework.core.annotation.AnnotatedElementUtils
+import org.springframework.core.annotation.AnnotatedElementUtils.findMergedAnnotation
 import org.springframework.core.annotation.AnnotationUtils
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
 /**
- * TODO miyamoto.daisuke.
+ * [RequestMappingHandlerMapping] extension to support [PolycreoController] and [PolycreoHandler].
  */
 class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
 
     companion object {
-        const val WS2TEN1_ACTION_ATTRIBUTE: String = "org.polycreo.mapping.PolycreoHandlerMapping.actionName"
+        const val POLYCREO_ACTION_ATTRIBUTE: String = "org.polycreo.mapping.PolycreoHandlerMapping.actionName"
     }
 
     override fun isHandler(beanType: Class<*>): Boolean {
@@ -40,55 +37,61 @@ class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
                 AnnotationUtils.findAnnotation(beanType, PolycreoController::class.java) != null
     }
 
-    @Suppress("ComplexMethod", "ReturnCount", "MagicNumber")
+    @Suppress("SpreadOperator", "ReturnCount")
     override fun getMappingForMethod(method: Method, handlerType: Class<*>): RequestMappingInfo? {
-        if (AnnotatedElementUtils.hasAnnotation(method, PolycreoHandler::class.java) == false) {
-            return super.getMappingForMethod(method, handlerType)
-        }
-
-        val controllerAnnotation = AnnotatedElementUtils.findMergedAnnotation(
-            handlerType,
-            PolycreoController::class.java
-        ) ?: return null
-
-        val builder = when (method.name) {
-            "list", "create", "deleteAll" -> RequestMappingInfo
-                .paths("/" + controllerAnnotation.pluralizedResourceName)
-            "get", "update", "delete", "patch", "upsert" -> RequestMappingInfo
-                .paths("/" + controllerAnnotation.pluralizedResourceName + "/{id}")
-            else -> return null
-        }
-
-        when (method.name) {
-            "list", "get" -> builder.methods(RequestMethod.GET)
-            "create", "update" -> builder.methods(RequestMethod.POST)
-            "upsert" -> builder.methods(RequestMethod.PUT)
-            "patch" -> builder.methods(RequestMethod.PATCH)
-            "delete", "deleteAll" -> builder.methods(RequestMethod.DELETE)
-            else -> return null
-        }
-
-        if (method.name == "update") { // TODO refactor MagicNumber
-            if (method.parameterCount == 3 && method.parameters[2].name == "version") {
-                builder.params("version")
-            }
-        }
-
-        if (method.name == "patch") { // TODO refactor MagicNumber
-            if (method.parameterTypes[1] == JsonMergePatch::class.java) {
-                builder.consumes(MediaType.APPLICATION_JSON_VALUE, "application/merge-patch+json")
-            } else if (method.parameterTypes[1] == JsonPatch::class.java) {
-                builder.consumes("application/json-patch+json")
-            }
-        }
-
-        val actionName = method.name.capitalize() + controllerAnnotation.resourceName.capitalize()
-        return builder.mappingName(actionName)
+        val methodAnnotation = findMergedAnnotation(method, PolycreoHandler::class.java)
+            ?: return super.getMappingForMethod(method, handlerType)
+        val controllerAnnotation = findMergedAnnotation(handlerType, PolycreoController::class.java)
+            ?: return null
+        return RequestMappingInfo
+            .paths(determinePath(methodAnnotation, controllerAnnotation))
+            .methods(methodAnnotation.method)
+            .mappingName(determineActionName(methodAnnotation, controllerAnnotation))
+            .params(*methodAnnotation.params)
+            .headers(*methodAnnotation.headers)
+            .consumes(*methodAnnotation.consumes)
+            .produces(*methodAnnotation.produces)
             .build()
+    }
+
+    private fun determineActionName(
+        methodAnnotation: PolycreoHandler,
+        controllerAnnotation: PolycreoController
+    ) = methodAnnotation.actionVerb + controllerAnnotation.resourceName.capitalize()
+
+    private fun determinePath(
+        methodAnnotation: PolycreoHandler,
+        controllerAnnotation: PolycreoController
+    ) = when (methodAnnotation.pathType) {
+        PathType.ENTIRE_COLLECTION -> "/${controllerAnnotation.pluralizedResourceName}"
+        PathType.SPECIFIC_ITEM -> "/${controllerAnnotation.pluralizedResourceName}/{id}"
     }
 
     override fun handleMatch(info: RequestMappingInfo, lookupPath: String, request: HttpServletRequest) {
         super.handleMatch(info, lookupPath, request)
-        request.setAttribute(WS2TEN1_ACTION_ATTRIBUTE, info.name)
+        request.setAttribute(POLYCREO_ACTION_ATTRIBUTE, info.name)
     }
+}
+
+object MediaTypes {
+
+    /**
+     * A String equivalent of [MediaTypes.APPLICATION_JSON_MERGE_PATCH].
+     */
+    const val APPLICATION_JSON_MERGE_PATCH_VALUE = "application/merge-patch+json"
+
+    /**
+     * A String equivalent of [MediaTypes.APPLICATION_JSON_PATCH].
+     */
+    const val APPLICATION_JSON_PATCH_VALUE = "application/json-patch+json"
+
+    /**
+     * Public constant media type for `application/merge-patch+json`.
+     */
+    val APPLICATION_JSON_MERGE_PATCH: MediaType = MediaType(APPLICATION_JSON_MERGE_PATCH_VALUE)
+
+    /**
+     * Public constant media type for `application/json-patch+json`.
+     */
+    val APPLICATION_JSON_PATCH: MediaType = MediaType(APPLICATION_JSON_PATCH_VALUE)
 }

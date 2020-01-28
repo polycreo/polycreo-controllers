@@ -28,13 +28,13 @@ private val logger = mu.KotlinLogging.logger {}
 class LoggingHandlerInterceptor : HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val action = request.getAttribute(PolycreoHandlerMapping.WS2TEN1_ACTION_ATTRIBUTE)
+        val action = request.getAttribute(PolycreoHandlerMapping.POLYCREO_ACTION_ATTRIBUTE)
         logger.info { "Action [$action] is invoked" }
         return true
     }
 
     override fun afterCompletion(req: HttpServletRequest, res: HttpServletResponse, handler: Any, ex: Exception?) {
-        val action = req.getAttribute(PolycreoHandlerMapping.WS2TEN1_ACTION_ATTRIBUTE)
+        val action = req.getAttribute(PolycreoHandlerMapping.POLYCREO_ACTION_ATTRIBUTE)
         if (ex == null) {
             logger.info { "Action [$action] completed successfully: ${res.status}" }
         } else {

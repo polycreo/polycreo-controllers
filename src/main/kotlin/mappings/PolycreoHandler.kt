@@ -15,10 +15,27 @@
  */
 package org.polycreo.presentation.mappings
 
+import org.springframework.web.bind.annotation.RequestMethod
+
 /**
  * Framework handler method.
  */
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-annotation class PolycreoHandler
+annotation class PolycreoHandler(
+    val actionVerb: String,
+    val method: RequestMethod,
+    val pathType: PathType,
+    val headers: Array<String> = [],
+    val params: Array<String> = [],
+    val consumes: Array<String> = [],
+    val produces: Array<String> = []
+)
+
+enum class PathType {
+
+    ENTIRE_COLLECTION,
+
+    SPECIFIC_ITEM
+}

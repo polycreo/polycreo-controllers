@@ -2,12 +2,14 @@ package org.polycreo.presentation.controllers
 
 import java.io.Serializable
 import org.polycreo.httpexceptions.HttpNotFoundException
+import org.polycreo.presentation.mappings.PathType
 import org.polycreo.presentation.mappings.PolycreoHandler
 import org.polycreo.presentation.usecases.ReadableUsecase
 import org.polycreo.services.NotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMethod
 
 private val logger = mu.KotlinLogging.logger {}
 
@@ -27,7 +29,7 @@ interface ReadableController<E, ID : Serializable> {
      * @return OK [ResponseEntity] of the resource
      * @throws HttpNotFoundException if the resource is not found
      */
-    @PolycreoHandler
+    @PolycreoHandler("Get", RequestMethod.GET, PathType.SPECIFIC_ITEM)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Get' + #resourceName)")
     fun get(@PathVariable id: ID): ResponseEntity<E> {
         try {

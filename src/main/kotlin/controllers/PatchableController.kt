@@ -7,13 +7,17 @@ import com.github.fge.jsonpatch.JsonPatch
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch
 import java.io.Serializable
 import org.polycreo.httpexceptions.HttpBadRequestException
+import org.polycreo.presentation.mappings.MediaTypes
+import org.polycreo.presentation.mappings.PathType
 import org.polycreo.presentation.mappings.PolycreoHandler
 import org.polycreo.presentation.usecases.UpdatableUsecase
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMethod
 
 private val logger = mu.KotlinLogging.logger {}
 
@@ -35,14 +39,24 @@ interface PatchableController<E : Any, ID : Serializable> {
      * @throws HttpBadRequestException if a request is invalid
      * @throws HttpBadRequestException if changes violate data constraints
      */
-    @PolycreoHandler
+    @PolycreoHandler(
+        actionVerb = "Patch",
+        method = RequestMethod.PATCH,
+        pathType = PathType.SPECIFIC_ITEM,
+        produces = [ MediaTypes.APPLICATION_JSON_PATCH_VALUE ]
+    )
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Patch' + #resourceName)")
     fun patch(@PathVariable id: ID, @RequestBody patch: JsonPatch) = patch0(id, patch::apply)
 
     /**
      * Patch resource by [JsonMergePatch].
      */
-    @PolycreoHandler
+    @PolycreoHandler(
+        actionVerb = "Patch",
+        method = RequestMethod.PATCH,
+        pathType = PathType.SPECIFIC_ITEM,
+        produces = [ MediaType.APPLICATION_JSON_VALUE, MediaTypes.APPLICATION_JSON_MERGE_PATCH_VALUE ]
+    )
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Patch' + #resourceName)")
     fun patch(@PathVariable id: ID, @RequestBody patch: JsonMergePatch) = patch0(id, patch::apply)
 

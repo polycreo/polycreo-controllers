@@ -1,6 +1,7 @@
 package org.polycreo.presentation.controllers
 
 import java.io.Serializable
+import org.polycreo.presentation.mappings.PathType
 import org.polycreo.presentation.mappings.PolycreoHandler
 import org.polycreo.presentation.usecases.UpsertableUsecase
 import org.springframework.http.ResponseEntity
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMethod
 
 private val logger = mu.KotlinLogging.logger {}
 
@@ -31,7 +33,7 @@ interface UpsertableController<E : Any, ID : Serializable> : Locatable<E> {
      *   `200 OK` is returned if an existing resource was updated.
      * @throws org.springframework.dao.DataAccessException if a data access error occurred
 	 */
-    @PolycreoHandler
+    @PolycreoHandler("Upsert", RequestMethod.PUT, PathType.SPECIFIC_ITEM)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Upsert' + #resourceName)")
     fun upsert(@PathVariable id: ID, @Validated @RequestBody newImage: E): ResponseEntity<E> {
         val (saved, found) = usecase.upsert(id, newImage)
