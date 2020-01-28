@@ -82,8 +82,10 @@ dependencies {
 
 	// test
 	testImplementation 'org.jetbrains.kotlin:kotlin-reflect'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.0.8.RELEASE'
-	testImplementation 'com.nhaarman:mockito-kotlin:1.6.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
+	testImplementation 'io.mockk:mockk:1.9.3' // https://mockk.io/
+	testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.17' // https://www.kotlinresources.com/library/assertk/
 
 	// build
 	detektPlugins 'io.gitlab.arturbosch.detekt:detekt-formatting:1.4.0'
@@ -106,6 +108,10 @@ detekt {
 		html.enabled = true
 		xml.enabled = true
 	}
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jacocoTestReport {
