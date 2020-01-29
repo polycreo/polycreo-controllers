@@ -29,7 +29,7 @@ interface ReadableController<E, ID : Serializable> {
      * @return OK [ResponseEntity] of the resource
      * @throws HttpNotFoundException if the resource is not found
      */
-    @PolycreoHandler("Get", RequestMethod.GET, PathType.SPECIFIC_ITEM)
+    @PolycreoHandler(RequestMethod.GET, PathType.SPECIFIC_ITEM)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Get' + #resourceName)")
     fun get(@PathVariable id: ID): ResponseEntity<E> {
         try {

@@ -17,7 +17,7 @@ interface DeletableController<E, ID : Serializable> {
 
     val usecase: DeletableUsecase<E, ID>
 
-    @PolycreoHandler("Delete", RequestMethod.DELETE, PathType.SPECIFIC_ITEM)
+    @PolycreoHandler(RequestMethod.DELETE, PathType.SPECIFIC_ITEM)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Delete' + #resourceName)")
     fun delete(@PathVariable id: ID): ResponseEntity<E> {
         try {

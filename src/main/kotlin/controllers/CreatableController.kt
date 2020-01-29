@@ -19,7 +19,7 @@ interface CreatableController<E : Any, ID : Serializable, R : CreateRequest<E>> 
 
     val usecase: CreatableUsecase<E, ID>
 
-    @PolycreoHandler("Create", RequestMethod.POST, PathType.ENTIRE_COLLECTION)
+    @PolycreoHandler(RequestMethod.POST, PathType.ENTIRE_COLLECTION)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Create' + #resourceName)")
     fun create(@RequestBody @Validated request: R): ResponseEntity<E> {
         try {

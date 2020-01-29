@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 annotation class PolycreoHandler(
-    val actionVerb: String,
     val method: RequestMethod,
     val pathType: PathType,
     val pathPrefix: String = "",

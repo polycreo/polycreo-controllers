@@ -14,7 +14,7 @@ interface TruncatableController<E, ID : Serializable> {
 
     val usecase: TruncatableUsecase<E, ID>
 
-    @PolycreoHandler("DeleteAll", RequestMethod.DELETE, PathType.ENTIRE_COLLECTION)
+    @PolycreoHandler(RequestMethod.DELETE, PathType.ENTIRE_COLLECTION)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'DeleteAll' + #resourceName)")
     fun deleteAll(): ResponseEntity<E> {
         usecase.deleteAll()

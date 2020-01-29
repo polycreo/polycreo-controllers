@@ -39,10 +39,7 @@ interface PatchableController<E : Any, ID : Serializable> {
      * @throws HttpBadRequestException if a request is invalid
      * @throws HttpBadRequestException if changes violate data constraints
      */
-    @PolycreoHandler(
-        actionVerb = "Patch",
-        method = RequestMethod.PATCH,
-        pathType = PathType.SPECIFIC_ITEM,
+    @PolycreoHandler(RequestMethod.PATCH, PathType.SPECIFIC_ITEM,
         produces = [ MediaTypes.APPLICATION_JSON_PATCH_VALUE ]
     )
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Patch' + #resourceName)")
@@ -51,10 +48,7 @@ interface PatchableController<E : Any, ID : Serializable> {
     /**
      * Patch resource by [JsonMergePatch].
      */
-    @PolycreoHandler(
-        actionVerb = "Patch",
-        method = RequestMethod.PATCH,
-        pathType = PathType.SPECIFIC_ITEM,
+    @PolycreoHandler(RequestMethod.PATCH, PathType.SPECIFIC_ITEM,
         produces = [ MediaType.APPLICATION_JSON_VALUE, MediaTypes.APPLICATION_JSON_MERGE_PATCH_VALUE ]
     )
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Patch' + #resourceName)")

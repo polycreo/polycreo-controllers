@@ -33,7 +33,7 @@ interface UpsertableController<E : Any, ID : Serializable> : Locatable<E> {
      *   `200 OK` is returned if an existing resource was updated.
      * @throws org.springframework.dao.DataAccessException if a data access error occurred
 	 */
-    @PolycreoHandler("Upsert", RequestMethod.PUT, PathType.SPECIFIC_ITEM)
+    @PolycreoHandler(RequestMethod.PUT, PathType.SPECIFIC_ITEM)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Upsert' + #resourceName)")
     fun upsert(@PathVariable id: ID, @Validated @RequestBody newImage: E): ResponseEntity<E> {
         val (saved, found) = usecase.upsert(id, newImage)

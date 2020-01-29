@@ -28,10 +28,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  */
 class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
 
-    companion object {
-        const val POLYCREO_ACTION_ATTRIBUTE: String = "org.polycreo.mapping.PolycreoHandlerMapping.actionName"
-    }
-
     override fun isHandler(beanType: Class<*>): Boolean {
         return super.isHandler(beanType) ||
                 AnnotationUtils.findAnnotation(beanType, PolycreoController::class.java) != null
@@ -46,7 +42,7 @@ class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
         return RequestMappingInfo
             .paths(determinePath(handler, controller))
             .methods(handler.method)
-            .mappingName(determineActionName(handler, controller))
+            .mappingName(determineActionName(method, controller))
             .params(*handler.params)
             .headers(*handler.headers)
             .consumes(*handler.consumes)
@@ -55,9 +51,9 @@ class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
     }
 
     private fun determineActionName(
-        handler: PolycreoHandler,
+        method: Method,
         controller: PolycreoController
-    ) = handler.actionVerb + controller.resourceName.capitalize()
+    ) = method.name.capitalize() + controller.resourceName.capitalize()
 
     private fun determinePath(handler: PolycreoHandler, controller: PolycreoController) = when (handler.pathType) {
         PathType.ENTIRE_COLLECTION -> "${handler.pathPrefix}/${controller.pluralizedResourceName}${handler.pathSuffix}"
@@ -67,6 +63,10 @@ class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
     override fun handleMatch(info: RequestMappingInfo, lookupPath: String, request: HttpServletRequest) {
         super.handleMatch(info, lookupPath, request)
         request.setAttribute(POLYCREO_ACTION_ATTRIBUTE, info.name)
+    }
+
+    companion object {
+        const val POLYCREO_ACTION_ATTRIBUTE: String = "org.polycreo.mapping.PolycreoHandlerMapping.actionName"
     }
 }
 

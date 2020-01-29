@@ -35,7 +35,7 @@ interface UpdatableController<E, ID : Serializable, R : UpdateRequest<E>> : Read
      * @throws HttpBadRequestException if changes violate data constraints
      * @throws org.springframework.dao.DataAccessException if database access is failed
      */
-    @PolycreoHandler("Update", RequestMethod.POST, PathType.SPECIFIC_ITEM)
+    @PolycreoHandler(RequestMethod.POST, PathType.SPECIFIC_ITEM)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Update' + #resourceName)")
     fun update(@PathVariable id: ID, @Validated @RequestBody request: R): ResponseEntity<E> {
         try {

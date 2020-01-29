@@ -18,7 +18,7 @@ interface ChunkableController<E, ID>
 
     val usecase: ChunkableUsecase<E, ID>
 
-    @PolycreoHandler(actionVerb = "List", method = RequestMethod.GET, pathType = PathType.ENTIRE_COLLECTION)
+    @PolycreoHandler(RequestMethod.GET, PathType.ENTIRE_COLLECTION)
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'List' + #resourceName)")
     fun list(chunkable: Chunkable): ResponseEntity<Any?> {
         val chunk = usecase.findAll(chunkable)

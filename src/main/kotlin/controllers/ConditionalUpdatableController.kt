@@ -22,12 +22,7 @@ interface ConditionalUpdatableController<E, ID : Serializable, C, R : UpdateRequ
 
     val usecase: ConditionalUpdatableUsecase<E, ID, C>
 
-    @PolycreoHandler(
-        actionVerb = "Update",
-        method = RequestMethod.POST,
-        pathType = PathType.SPECIFIC_ITEM,
-        params = ["version"]
-    )
+    @PolycreoHandler(RequestMethod.POST, PathType.SPECIFIC_ITEM, params = ["version"])
     @PreAuthorize("hasAnyAuthority('ROOT', #authorityPrefix + 'Update' + #resourceName)")
     fun update(
         @PathVariable id: ID,
