@@ -40,24 +40,13 @@ class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
         val controller = findMergedAnnotation(handlerType, PolycreoController::class.java)
             ?: return null
         return RequestMappingInfo
-            .paths(determinePath(handler, controller))
+            .paths(handler.pathType.build(controller, handler))
             .methods(handler.method)
-            .mappingName(determineActionName(method, controller))
             .params(*handler.params)
             .headers(*handler.headers)
             .consumes(*handler.consumes)
             .produces(*handler.produces)
             .build()
-    }
-
-    private fun determineActionName(
-        method: Method,
-        controller: PolycreoController
-    ) = method.name.capitalize() + controller.resourceName.capitalize()
-
-    private fun determinePath(handler: PolycreoHandler, controller: PolycreoController) = when (handler.pathType) {
-        PathType.ENTIRE_COLLECTION -> "${handler.pathPrefix}/${controller.pluralizedResourceName}${handler.pathSuffix}"
-        PathType.SPECIFIC_ITEM -> "${handler.pathPrefix}/${controller.pluralizedResourceName}/{id}${handler.pathSuffix}"
     }
 
     override fun handleMatch(info: RequestMappingInfo, lookupPath: String, request: HttpServletRequest) {
@@ -70,6 +59,9 @@ class PolycreoHandlerMapping : RequestMappingHandlerMapping() {
     }
 }
 
+/**
+ * Additional [MediaType].
+ */
 object MediaTypes {
 
     /**

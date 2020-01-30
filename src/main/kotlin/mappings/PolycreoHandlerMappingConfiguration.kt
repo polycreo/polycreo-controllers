@@ -23,7 +23,11 @@ import org.springframework.context.annotation.Profile
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
 /**
- * TODO miyamoto.daisuke.
+ * Spring configuration for [PolycreoHandlerMapping].
+ *
+ * On the Spring Boot environment, default [RequestMappingHandlerMapping] is not replaced
+ * by only defining another mapping bean.  If you want, you must provide enhanced [RequestMappingHandlerMapping]
+ * via [WebMvcRegistrations] bean.
  */
 @Profile("web")
 @Configuration
@@ -43,6 +47,11 @@ class PolycreoHandlerMappingConfiguration {
     }
 }
 
+/**
+ * Enable Polycreo style handler mapping feature.
+ *
+ * @see PolycreoHandlerMappingConfiguration
+ */
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented

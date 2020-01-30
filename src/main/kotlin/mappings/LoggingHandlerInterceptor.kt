@@ -23,7 +23,14 @@ import org.springframework.web.servlet.HandlerInterceptor
 private val logger = mu.KotlinLogging.logger {}
 
 /**
- * TODO miyamoto.daisuke.
+ * [HandlerInterceptor] to log API action invocation and completion.
+ *
+ * API action name is retrieved from request attribute set by [PolycreoHandlerMapping].
+ *
+ * If the request processing is completed and result in an error,
+ * this [afterCompletion] method will emit error log with [alert marker][Markers.ALERT].
+ *
+ * Each log with [alert marker][Markers.ALERT] should be monitored for the ideal system operation system.
  */
 class LoggingHandlerInterceptor : HandlerInterceptor {
 

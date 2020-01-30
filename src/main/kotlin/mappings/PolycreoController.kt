@@ -18,7 +18,7 @@ package org.polycreo.presentation.mappings
 import org.springframework.web.bind.annotation.RestController
 
 /**
- * Framework controller.
+ * Polycreo style controller.
  */
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
