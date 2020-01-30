@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 @MustBeDocumented
 annotation class PolycreoHandler(
 
-	/**
+    /**
 	 * The HTTP request methods to map to.
 	 */
     val method: RequestMethod,
@@ -45,7 +45,7 @@ annotation class PolycreoHandler(
      */
     val pathSuffix: String = "",
 
-	/**
+    /**
 	 * The parameters of the mapped request.
      *
      * @see org.springframework.web.bind.annotation.RequestMapping.params
