@@ -15,8 +15,10 @@
  */
 package org.polycreo.presentation.chunkableargument
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
@@ -117,7 +119,7 @@ class ChunkableHandlerMethodArgumentResolverTest {
         assertThat {
             // exercise
             sut.resolveArgument(methodParameter, mavContainer, webRequest, binderFactory)
-        }.thrownError {
+        }.isFailure().all {
             isInstanceOf(IllegalStateException::class)
         }
     }
