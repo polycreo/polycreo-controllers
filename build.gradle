@@ -85,7 +85,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
 	testImplementation 'io.mockk:mockk:1.9.3' // https://mockk.io/
-	testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.21' // https://www.kotlinresources.com/library/assertk/
+	testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.24' // https://www.kotlinresources.com/library/assertk/
 
 	// build
 	detektPlugins 'io.gitlab.arturbosch.detekt:detekt-formatting:1.5.1'
